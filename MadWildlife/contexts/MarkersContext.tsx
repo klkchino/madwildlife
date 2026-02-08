@@ -107,6 +107,7 @@ type MarkersContextType = {
   markers: MarkerWithMetadata[];
   wildlifeData: WildlifeItem[];
   addMarker: (marker: MarkerWithMetadata) => void;
+  addWildlifeItem: (item: WildlifeItem) => void;
   getFauna: () => WildlifeItem[];
   getFlora: () => WildlifeItem[];
 };
@@ -134,6 +135,22 @@ export const MarkersProvider = ({ children }: { children: ReactNode }) => {
     setMarkers(prev => [...prev, marker]);
   };
 
+  const addWildlifeItem = (item: WildlifeItem) => {
+    // Add to wildlife data
+    setWildlifeData(prev => [...prev, item]);
+    
+    // Also add as a marker if it has coordinates
+    if (item.coordinate) {
+      const newMarker: MarkerWithMetadata = {
+        coordinate: item.coordinate,
+        title: item.name,
+        description: item.description,
+        imageUrl: item.imageUrl,
+      };
+      setMarkers(prev => [...prev, newMarker]);
+    }
+  };
+
   const getFauna = (): WildlifeItem[] => {
     return wildlifeData.filter(item => item.type === "fauna");
   };
@@ -143,7 +160,7 @@ export const MarkersProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <MarkersContext.Provider value={{ markers, wildlifeData, addMarker, getFauna, getFlora }}>
+    <MarkersContext.Provider value={{ markers, wildlifeData, addMarker, addWildlifeItem, getFauna, getFlora }}>
       {children}
     </MarkersContext.Provider>
   );

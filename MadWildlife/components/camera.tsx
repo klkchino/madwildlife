@@ -20,12 +20,14 @@ import { COLORS, FONTS, SPACING, BORDER_RADIUS } from "@/assets/Theme";
 import { useMarkers } from "@/contexts/MarkersContext";
 
 export function Camera() {
-  const { addMarker } = useMarkers();
+  const { addMarker, addWildlifeItem } = useMarkers();
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [title, setTitle] = useState("");
+  const [scientificName, setScientificName] = useState("");
   const [description, setDescription] = useState("");
+  const [type, setType] = useState<"fauna" | "flora">("fauna");
   const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const cameraRef = useRef<CameraView>(null);
   const navigation = useNavigation();
@@ -100,7 +102,9 @@ export function Camera() {
     } as any);
     
     formData.append("title", title);
+    formData.append("scientificName", scientificName);
     formData.append("description", description);
+    formData.append("type", type);
     formData.append("latitude", location?.latitude.toString() || "0");
     formData.append("longitude", location?.longitude.toString() || "0");
 
@@ -119,7 +123,9 @@ export function Camera() {
         // Clear form
         setCapturedImage(null);
         setTitle('');
+        setScientificName('');
         setDescription('');
+        setType('fauna');
         setLocation(null);
 
         // Navigate back to Map
@@ -138,17 +144,23 @@ export function Camera() {
     }*/
 
     if (location?.latitude !== undefined && location?.longitude !== undefined) {
-      addMarker({
-        coordinate: { latitude: location.latitude, longitude: location.longitude },
-        title: title,
-        description: description,
+      // Add to wildlife data (for Dex)
+      addWildlifeItem({
+        id: `${type}-${Date.now()}`,
+        name: title,
+        scientificName: scientificName || "Unknown",
         imageUrl: capturedImage,
+        type: type,
+        coordinate: { latitude: location.latitude, longitude: location.longitude },
+        description: description,
       });
 
       // Clear form
       setCapturedImage(null);
       setTitle('');
+      setScientificName('');
       setDescription('');
+      setType('fauna');
       setLocation(null);
 
       // Navigate back to Map
@@ -166,7 +178,9 @@ export function Camera() {
   const retakePhoto = () => {
     setCapturedImage(null);
     setTitle("");
+    setScientificName("");
     setDescription("");
+    setType("fauna");
     setLocation(null)
   };
 
@@ -185,12 +199,66 @@ export function Camera() {
           <Image source={{ uri: capturedImage }} style={styles.previewImage} />
 
           <View style={styles.form}>
-            <Text style={styles.label}>Title</Text>
+            <Text style={styles.label}>Type</Text>
+            <View style={styles.typeSelector}>
+              <TouchableOpacity
+                style={[
+                  styles.typeButton,
+                  type === "fauna" && styles.typeButtonActive,
+                ]}
+                onPress={() => setType("fauna")}
+              >
+                <MaterialIcons 
+                  name="pets" 
+                  size={24} 
+                  color={type === "fauna" ? "white" : COLORS.textSecondary} 
+                />
+                <Text
+                  style={[
+                    styles.typeButtonText,
+                    type === "fauna" && styles.typeButtonTextActive,
+                  ]}
+                >
+                  Fauna
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.typeButton,
+                  type === "flora" && styles.typeButtonActive,
+                ]}
+                onPress={() => setType("flora")}
+              >
+                <MaterialIcons 
+                  name="local-florist" 
+                  size={24} 
+                  color={type === "flora" ? "white" : COLORS.textSecondary} 
+                />
+                <Text
+                  style={[
+                    styles.typeButtonText,
+                    type === "flora" && styles.typeButtonTextActive,
+                  ]}
+                >
+                  Flora
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.label}>Common Name</Text>
             <TextInput
               style={styles.input}
               placeholder="e.g., Red Fox"
               value={title}
               onChangeText={setTitle}
+            />
+
+            <Text style={styles.label}>Scientific Name (Optional)</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="e.g., Vulpes vulpes"
+              value={scientificName}
+              onChangeText={setScientificName}
             />
 
             <Text style={styles.label}>Description</Text>
@@ -364,6 +432,37 @@ const styles = StyleSheet.create({
   textArea: {
     height: 100,
     textAlignVertical: "top",
+  },
+  typeSelector: {
+    flexDirection: "row",
+    gap: SPACING.md,
+    marginBottom: SPACING.md,
+  },
+  typeButton: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.sm,
+    borderRadius: BORDER_RADIUS.md,
+    backgroundColor: COLORS.cardBackground,
+    borderWidth: 2,
+    borderColor: COLORS.border,
+    gap: SPACING.sm,
+  },
+  typeButtonActive: {
+    backgroundColor: COLORS.accentDark,
+    borderColor: COLORS.accentDark,
+  },
+  typeButtonText: {
+    fontSize: FONTS.sizes.medium,
+    fontFamily: FONTS.bodyBold,
+    fontWeight: FONTS.weights.semibold,
+    color: COLORS.textSecondary,
+  },
+  typeButtonTextActive: {
+    color: "white",
   },
   buttonRow: {
     flexDirection: "row",

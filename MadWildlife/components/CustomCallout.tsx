@@ -1,7 +1,7 @@
 import React from "react";
  import { View, StyleSheet, Dimensions, Image, Text } from "react-native";
  import { Callout } from "react-native-maps";
- import { MarkerWithMetadata } from "@/assets/markers"
+ import { MarkerWithMetadata } from "@/contexts/MarkersContext"
  import { COLORS, FONTS, SPACING, BORDER_RADIUS } from "@/assets/Theme";
 
  const screenWidth = Dimensions.get("window").width;

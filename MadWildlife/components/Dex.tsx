@@ -3,10 +3,9 @@ import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import {defaultDexImage} from "../assets/defaultDexImage"
 import { COLORS, FONTS, SPACING, BORDER_RADIUS } from "@/assets/Theme";
-import { getFauna, getFlora, WildlifeItem } from "@/assets/markers";
+import { useMarkers, WildlifeItem } from "@/contexts/MarkersContext";
 
 const Tab = createMaterialTopTabNavigator();
-
 // Default fallback image
 const DEFAULT_IMAGE = defaultDexImage;
 
@@ -29,6 +28,7 @@ const SpeciesCard = ({ item }: { item: WildlifeItem }) => {
 };
 
 function FaunaScreen() {
+  const { getFauna } = useMarkers();
   const faunaData = getFauna();
   
   return (
@@ -44,6 +44,7 @@ function FaunaScreen() {
 }
 
 function FloraScreen() {
+  const { getFlora } = useMarkers();
   const floraData = getFlora();
   
   return (
