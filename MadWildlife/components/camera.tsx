@@ -129,7 +129,7 @@ export function Camera() {
         tempUserLog: {
           image: capturedImage,
           observations: observations,
-          timestamp: serverTimestamp(),
+          timestamp: new Date(),
           location: {
             lat: location.coords.latitude,
             lng: location.coords.longitude,
