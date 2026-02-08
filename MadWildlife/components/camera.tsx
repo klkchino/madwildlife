@@ -75,24 +75,47 @@ export function Camera() {
     }
 
     // TODO: Add your database logic here
-    console.log("Submitting:", {
-      image: capturedImage,
-      title,
-      description,
-    });
+    const formData = new FormData();
+    formData.append("image", {
+      uri: capturedImage,
+      name: `sighting_${Date.now()}.jpg`,
+      type: "image/jpeg",
+    } as any);
+    
+    formData.append("title", title);
+    formData.append("description", description);
 
-    // Reset form
-    setCapturedImage(null);
-    setTitle("");
-    setDescription("");
+    try {
+      const response = await fetch(
+        'http://YOUR_BACKEND_URL:8080/api/animals/upload',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        // Clear form
+        setCapturedImage(null);
+        setTitle('');
+        setDescription('');
 
-    // Navigate back to Map
-    navigation.navigate("Map" as never);
+        // Navigate back to Map
+        navigation.navigate("Map" as never);
 
-    // Show success message after navigation
-    setTimeout(() => {
-      Alert.alert("Success", "Your wildlife sighting has been submitted!");
-    }, 500);
+        // Show success message after navigation
+        setTimeout(() => {
+          Alert.alert("Success", "Your wildlife sighting has been submitted!");
+        }, 500);
+      } else {
+        Alert.alert('Error', data.message || 'Failed to upload data');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      Alert.alert('Error', 'Failed to upload data');
+    }
   };
 
   const retakePhoto = () => {
