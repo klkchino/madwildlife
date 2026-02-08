@@ -1,11 +1,12 @@
 // filepath: /Users/oscar/Documents/SP26/madwildlife/MadWildlife/components/map.tsx
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
-import MapView from "react-native-maps";
-import { PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE} from "react-native-maps";
 import { useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
 import { Ionicons } from "@expo/vector-icons";
+import CustomCallout from "./CustomCallout";
+import { markers } from "../assets/markers";
 
 export const Map = () => {
   const mapRef = useRef<MapView | null>(null);
@@ -149,6 +150,18 @@ export const Map = () => {
     }
   };
 
+  const renderMarkers = () => {
+    return markers.map((marker, index) => (
+      <Marker
+        key={index}
+        coordinate={marker.coordinate}
+     >
+        <CustomCallout marker={marker} />
+      </Marker>
+   ));
+   };
+    
+
   return (
     <View style={styles.container}>
       <MapView
@@ -166,7 +179,11 @@ export const Map = () => {
         pitchEnabled={true}
         rotateEnabled={true}
         onPanDrag={handleMapPress} 
-      />
+      >
+
+      {renderMarkers()}
+      </MapView>
+
 
       {/* Custom Navigation Button */}
       <TouchableOpacity
