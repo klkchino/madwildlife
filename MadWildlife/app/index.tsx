@@ -1,16 +1,5 @@
-import { Text, View } from "react-native";
-import { Map } from "@/components/map";
+import { Navigation } from "@/components/nav";
 
 export default function Index() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Map></Map>
-    </View>
-  );
+  return <Navigation />;
 }
