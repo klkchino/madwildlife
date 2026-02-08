@@ -17,6 +17,7 @@ import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
 import { COLORS, FONTS, SPACING, BORDER_RADIUS } from "@/assets/Theme";
+import { markers } from "@/assets/markers";
 
 export function Camera() {
   const [facing, setFacing] = useState<CameraType>("back");
@@ -89,8 +90,8 @@ export function Camera() {
       return;
     }
 
-    // TODO: Add your database logic here
-    const formData = new FormData();
+    // TODO: Replace with database logic when backend is ready
+    /*const formData = new FormData();
     formData.append("image", {
       uri: capturedImage,
       name: `sighting_${Date.now()}.jpg`,
@@ -133,6 +134,35 @@ export function Camera() {
     } catch (error) {
       console.error('Upload error:', error);
       Alert.alert('Error', 'Failed to upload data');
+    }*/
+
+    if (location?.latitude !== undefined && location?.longitude !== undefined) {
+      let coords = { latitude: location.latitude, longitude: location.longitude };
+      let t = title;
+      let d = description;
+
+      markers.push({
+        coordinate: coords,
+        title: t,
+        description: d,
+        imageUrl: capturedImage,
+      });
+
+      // Clear form
+      setCapturedImage(null);
+      setTitle('');
+      setDescription('');
+      setLocation(null);
+
+      // Navigate back to Map
+      navigation.navigate("Map" as never);
+
+      // Show success message after navigation
+      setTimeout(() => {
+        Alert.alert("Success", "Your wildlife sighting has been submitted!");
+      }, 500);
+    } else {
+      Alert.alert("Error", "Location data is missing.");
     }
   };
 
