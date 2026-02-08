@@ -1,4 +1,3 @@
-// filepath: /Users/oscar/Documents/SP26/madwildlife/MadWildlife/components/map.tsx
 import React from "react";
 import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE} from "react-native-maps";

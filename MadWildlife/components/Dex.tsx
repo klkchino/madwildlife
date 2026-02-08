@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import {defaultDexImage} from "../assets/defaultDexImage"
+import { COLORS, FONTS, SPACING, BORDER_RADIUS } from "@/assets/Theme";
 
 const Tab = createMaterialTopTabNavigator();
 
 // Default fallback image
 const DEFAULT_IMAGE = defaultDexImage;
 
-// Sample data - replace with your actual data
+// Sample data - replace with actual data
 const faunaData = [
   {
     id: "1",
@@ -122,22 +123,23 @@ export function Dex() {
       </View>
       <Tab.Navigator
         screenOptions={{
-          tabBarActiveTintColor: "#007AFF",
-          tabBarInactiveTintColor: "#8E8E93",
+          tabBarActiveTintColor: COLORS.accentDark,
+          tabBarInactiveTintColor: COLORS.textSecondary,
           tabBarIndicatorStyle: {
-            backgroundColor: "#007AFF",
+            backgroundColor: COLORS.accentDark,
             height: 3,
           },
           tabBarStyle: {
-            backgroundColor: "#FFFFFF",
+            backgroundColor: COLORS.primary,
             elevation: 0,
             shadowOpacity: 0,
             borderBottomWidth: 1,
-            borderBottomColor: "#E5E5EA",
+            borderBottomColor: COLORS.primaryDark,
           },
           tabBarLabelStyle: {
-            fontSize: 16,
-            fontWeight: "600",
+            fontSize: FONTS.sizes.medium,
+            fontWeight: FONTS.weights.semibold,
+            fontFamily: FONTS.bodyBold,
             textTransform: "none",
           },
         }}
@@ -152,62 +154,68 @@ export function Dex() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F2F2F7",
+    backgroundColor: COLORS.background,
   },
   header: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: COLORS.primary,
     paddingTop: 60,
     paddingBottom: 15,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E5EA",
+    paddingHorizontal: SPACING.lg,
+    borderBottomWidth: 2,
+    borderBottomColor: COLORS.primaryDark,
   },
   headerTitle: {
-    fontSize: 34,
-    fontWeight: "bold",
-    color: "#000000",
+    fontSize: FONTS.sizes.xxlarge,
+    fontWeight: FONTS.weights.bold,
+    fontFamily: FONTS.headingBold,
+    color: COLORS.text,
+    letterSpacing: 0.5,
   },
   tabContainer: {
     flex: 1,
-    backgroundColor: "#F2F2F7",
+    backgroundColor: COLORS.background,
   },
   listContent: {
-    padding: 15,
+    padding: SPACING.md,
   },
   card: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 12,
-    marginBottom: 15,
+    backgroundColor: COLORS.cardBackground,
+    borderRadius: BORDER_RADIUS.md,
+    marginBottom: SPACING.md,
     flexDirection: "row",
     overflow: "hidden",
-    shadowColor: "#000",
+    shadowColor: COLORS.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.15,
     shadowRadius: 3.84,
     elevation: 3,
+    borderWidth: 1,
+    borderColor: COLORS.border,
   },
   cardImage: {
     width: 100,
     height: 100,
-    backgroundColor: "#E5E5EA",
+    backgroundColor: COLORS.primaryLight,
   },
   cardContent: {
     flex: 1,
-    padding: 15,
+    padding: SPACING.md,
     justifyContent: "center",
   },
   cardTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#000000",
+    fontSize: FONTS.sizes.large,
+    fontWeight: FONTS.weights.bold,
+    fontFamily: FONTS.headingBold,
+    color: COLORS.text,
     marginBottom: 5,
   },
   cardScientificName: {
-    fontSize: 14,
-    fontStyle: "italic",
-    color: "#8E8E93",
+    fontSize: FONTS.sizes.medium,
+    fontFamily: FONTS.bodyItalic,
+    fontStyle: 'italic',
+    color: COLORS.textSecondary,
   },
 });

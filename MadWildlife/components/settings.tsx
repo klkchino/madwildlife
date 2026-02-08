@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { COLORS, FONTS, SPACING, BORDER_RADIUS } from "@/assets/Theme";
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +20,7 @@ function SettingsHome({ navigation }: any) {
           text: "Delete",
           style: "destructive",
           onPress: () => {
-            // Add your delete account logic here
+            // delete account logic here
             console.log("Account deleted");
           },
         },
@@ -47,7 +48,7 @@ function SettingsHome({ navigation }: any) {
           style={styles.settingItem}
           onPress={() => navigation.navigate("EditProfile")}
         >
-          <MaterialIcons name="person" size={24} color="#007AFF" />
+          <MaterialIcons name="person" size={24} color="#000000" />
           <Text style={styles.settingText}>Edit Profile</Text>
           <MaterialIcons name="chevron-right" size={24} color="#8E8E93" />
         </TouchableOpacity>
@@ -56,7 +57,7 @@ function SettingsHome({ navigation }: any) {
           style={styles.settingItem}
           onPress={() => navigation.navigate("Notifications")}
         >
-          <MaterialIcons name="notifications" size={24} color="#007AFF" />
+          <MaterialIcons name="notifications" size={24} color="#000000" />
           <Text style={styles.settingText}>Notifications</Text>
           <MaterialIcons name="chevron-right" size={24} color="#8E8E93" />
         </TouchableOpacity>
@@ -97,15 +98,16 @@ export function Settings() {
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: "#F2F2F7",
+          backgroundColor: COLORS.primary,
         },
-        headerTintColor: "#007AFF",
+        headerTintColor: COLORS.accentDark,
         headerTitleStyle: {
-          fontWeight: "600",
+          fontWeight: FONTS.weights.semibold,
+          fontFamily: FONTS.bodyBold,
         },
         headerBackTitle: "",
         contentStyle: {
-          backgroundColor: "#F2F2F7",
+          backgroundColor: COLORS.background,
         },
         animation: "none",
       }}
@@ -135,84 +137,99 @@ export function Settings() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F2F2F7",
-    paddingTop: 20,
+    backgroundColor: COLORS.background,
   },
   profileSection: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: COLORS.primary,
     alignItems: "center",
-    paddingVertical: 40,
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    paddingTop: 60,
+    paddingBottom: 40,
+    paddingHorizontal: SPACING.lg,
+    marginBottom: SPACING.lg,
+    borderBottomWidth: 2,
+    borderBottomColor: COLORS.primaryDark,
   },
   profileImageContainer: {
-    marginBottom: 15,
+    marginBottom: SPACING.md,
   },
   profileImage: {
     width: 100,
     height: 100,
-    borderRadius: 50,
-    backgroundColor: "#E5E5EA",
+    borderRadius: BORDER_RADIUS.round,
+    backgroundColor: COLORS.primaryLight,
+    borderWidth: 3,
+    borderColor: COLORS.primaryDark,
   },
   username: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#000000",
+    fontSize: FONTS.sizes.xlarge,
+    fontWeight: FONTS.weights.bold,
+    fontFamily: FONTS.headingBold,
+    color: COLORS.text,
     marginBottom: 5,
+    letterSpacing: 0.5,
   },
   email: {
-    fontSize: 16,
-    color: "#8E8E93",
+    fontSize: FONTS.sizes.medium,
+    fontFamily: FONTS.body,
+    color: COLORS.textSecondary,
   },
   settingsSection: {
-    backgroundColor: "#FFFFFF",
-    marginBottom: 20,
+    backgroundColor: COLORS.cardBackground,
+    marginBottom: SPACING.lg,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: COLORS.border,
   },
   settingItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.lg,
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E5EA",
+    borderBottomColor: COLORS.border,
   },
   settingText: {
     flex: 1,
-    fontSize: 17,
-    color: "#000000",
-    marginLeft: 15,
+    fontSize: FONTS.sizes.large,
+    fontFamily: FONTS.bodyBold,
+    color: COLORS.text,
+    marginLeft: SPACING.md,
   },
   deleteButton: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FFFFFF",
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    marginHorizontal: 20,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#FF3B30",
+    backgroundColor: COLORS.cardBackground,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.lg,
+    marginHorizontal: SPACING.lg,
+    borderRadius: BORDER_RADIUS.md,
+    borderWidth: 2,
+    borderColor: COLORS.error,
   },
   deleteButtonText: {
-    fontSize: 17,
-    color: "#FF3B30",
-    fontWeight: "600",
-    marginLeft: 10,
+    fontSize: FONTS.sizes.large,
+    fontFamily: FONTS.bodyBold,
+    color: COLORS.error,
+    fontWeight: FONTS.weights.semibold,
+    marginLeft: SPACING.sm,
   },
   screenContainer: {
     flex: 1,
-    backgroundColor: "#F2F2F7",
-    padding: 20,
+    backgroundColor: COLORS.background,
+    padding: SPACING.lg,
   },
   screenTitle: {
-    fontSize: 28,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#000000",
+    fontSize: FONTS.sizes.xlarge,
+    fontWeight: FONTS.weights.bold,
+    fontFamily: FONTS.headingBold,
+    marginBottom: SPACING.lg,
+    color: COLORS.text,
+    letterSpacing: 0.5,
   },
   placeholder: {
-    fontSize: 16,
-    color: "#8E8E93",
+    fontSize: FONTS.sizes.medium,
+    fontFamily: FONTS.body,
+    color: COLORS.textSecondary,
   },
 });
