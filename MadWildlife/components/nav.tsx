@@ -4,6 +4,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { Map } from "@/components/map";
 import { Settings } from "@/components/settings";
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 const Tab = createBottomTabNavigator();
 
@@ -28,6 +29,16 @@ export function Navigation() {
           title: "Map",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="map" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Camera"
+        component={Map}
+        options={{
+          title: "Camera",
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="camera" size={size} color={color} />
           ),
         }}
       />
