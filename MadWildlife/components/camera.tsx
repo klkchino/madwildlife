@@ -15,6 +15,7 @@ import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
+import * as Location from "expo-location";
 
 export function Camera() {
   const [facing, setFacing] = useState<CameraType>("back");
@@ -22,6 +23,7 @@ export function Camera() {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const cameraRef = useRef<CameraView>(null);
   const navigation = useNavigation();
 
@@ -47,6 +49,12 @@ export function Camera() {
       const photo = await cameraRef.current.takePictureAsync();
       if (photo) {
         setCapturedImage(photo.uri);
+        let loc = await Location.getCurrentPositionAsync({});
+        const userLoc = {
+                latitude: loc.coords.latitude,
+                longitude: loc.coords.longitude,
+              };
+        setLocation(userLoc);
       }
     }
   };
@@ -61,6 +69,12 @@ export function Camera() {
 
     if (!result.canceled) {
       setCapturedImage(result.assets[0].uri);
+      let loc = await Location.getCurrentPositionAsync({});
+      const userLoc = {
+            latitude: loc.coords.latitude,
+            longitude: loc.coords.longitude,
+            };
+      setLocation(userLoc);
     }
   };
 
@@ -84,6 +98,8 @@ export function Camera() {
     
     formData.append("title", title);
     formData.append("description", description);
+    formData.append("latitude", location?.latitude.toString() || "0");
+    formData.append("longitude", location?.longitude.toString() || "0");
 
     try {
       const response = await fetch(
@@ -101,6 +117,7 @@ export function Camera() {
         setCapturedImage(null);
         setTitle('');
         setDescription('');
+        setLocation(null);
 
         // Navigate back to Map
         navigation.navigate("Map" as never);
@@ -122,6 +139,7 @@ export function Camera() {
     setCapturedImage(null);
     setTitle("");
     setDescription("");
+    setLocation(null)
   };
 
   // If image is captured, show the form
