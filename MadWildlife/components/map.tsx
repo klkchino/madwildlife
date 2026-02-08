@@ -1,6 +1,6 @@
 // filepath: /Users/oscar/Documents/SP26/madwildlife/MadWildlife/components/map.tsx
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View, Image } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE} from "react-native-maps";
 import { useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
@@ -155,7 +155,11 @@ export const Map = () => {
       <Marker
         key={index}
         coordinate={marker.coordinate}
-     >
+      >
+        <Image 
+          source={{ uri: marker.imageUrl }} 
+          style={{ width: 45, height: 45, borderRadius: 20 }}
+        />
         <CustomCallout marker={marker} />
       </Marker>
    ));
