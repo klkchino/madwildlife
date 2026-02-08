@@ -1,0 +1,1 @@
+export const defaultDexImage = require("../assets/images/default-dex.jpeg");
