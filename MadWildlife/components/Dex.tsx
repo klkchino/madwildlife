@@ -71,14 +71,14 @@ type SpeciesItem = {
 };
 
 const SpeciesCard = ({ item }: { item: SpeciesItem }) => {
-  const [imageUri, setImageUri] = useState(item.imageUrl || DEFAULT_IMAGE);
+  const [imageError, setImageError] = useState(false);
 
   return (
     <TouchableOpacity style={styles.card}>
       <Image 
-        source={{ uri: imageUri }} 
+        source={imageError || !item.imageUrl ? DEFAULT_IMAGE : { uri: item.imageUrl }} 
         style={styles.cardImage}
-        onError={() => setImageUri(DEFAULT_IMAGE)}
+        onError={() => setImageError(true)}
       />
       <View style={styles.cardContent}>
         <Text style={styles.cardTitle}>{item.name}</Text>
