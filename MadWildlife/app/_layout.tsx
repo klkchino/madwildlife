@@ -8,6 +8,7 @@ import { Stack } from "expo-router";
 import { useFonts, Silkscreen_400Regular, Silkscreen_700Bold } from '@expo-google-fonts/silkscreen';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { MarkersProvider } from '../contexts/MarkersContext';
 
 // Prevent splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -28,5 +29,7 @@ export default function RootLayout() {
     return null;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return <MarkersProvider>
+      {<Stack screenOptions={{ headerShown: false }} />}
+    </MarkersProvider>;
 }

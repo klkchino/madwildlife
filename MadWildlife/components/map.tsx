@@ -5,7 +5,17 @@ import { useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
 import { Ionicons } from "@expo/vector-icons";
 import CustomCallout from "./CustomCallout";
-import { markers } from "../assets/markers";
+import { MarkerWithMetadata } from "../assets/markers";
+import { useMarkers } from "@/contexts/MarkersContext";
+
+import { useRoute, RouteProp } from "@react-navigation/native";
+
+type MapRouteParams = {
+  Map: {
+    newMarker?: MarkerWithMetadata;
+  };
+};
+
 
 export const Map = () => {
   const mapRef = useRef<MapView | null>(null);
@@ -16,6 +26,8 @@ export const Map = () => {
   const [heading, setHeading] = useState(0);
   const [navigationMode, setNavigationMode] = useState(false);
   const [initialLocationSet, setInitialLocationSet] = useState(false);
+  const route = useRoute<RouteProp<MapRouteParams, 'Map'>>();
+  const { markers } = useMarkers();
 
   useEffect(() => {
     let locationSubscription: Location.LocationSubscription | null = null;

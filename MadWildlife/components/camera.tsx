@@ -17,9 +17,10 @@ import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import * as Location from "expo-location";
 import { COLORS, FONTS, SPACING, BORDER_RADIUS } from "@/assets/Theme";
-import { markers } from "@/assets/markers";
+import { useMarkers } from "@/contexts/MarkersContext";
 
 export function Camera() {
+  const { addMarker } = useMarkers();
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
@@ -137,14 +138,10 @@ export function Camera() {
     }*/
 
     if (location?.latitude !== undefined && location?.longitude !== undefined) {
-      let coords = { latitude: location.latitude, longitude: location.longitude };
-      let t = title;
-      let d = description;
-
-      markers.push({
-        coordinate: coords,
-        title: t,
-        description: d,
+      addMarker({
+        coordinate: { latitude: location.latitude, longitude: location.longitude },
+        title: title,
+        description: description,
         imageUrl: capturedImage,
       });
 
