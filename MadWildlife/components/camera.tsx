@@ -15,6 +15,7 @@ import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
+import * as Location from "expo-location";
 import { COLORS, FONTS, SPACING, BORDER_RADIUS } from "@/assets/Theme";
 
 export function Camera() {
@@ -23,6 +24,7 @@ export function Camera() {
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const cameraRef = useRef<CameraView>(null);
   const navigation = useNavigation();
 
@@ -48,6 +50,12 @@ export function Camera() {
       const photo = await cameraRef.current.takePictureAsync();
       if (photo) {
         setCapturedImage(photo.uri);
+        let loc = await Location.getCurrentPositionAsync({});
+        const userLoc = {
+                latitude: loc.coords.latitude,
+                longitude: loc.coords.longitude,
+              };
+        setLocation(userLoc);
       }
     }
   };
@@ -62,6 +70,12 @@ export function Camera() {
 
     if (!result.canceled) {
       setCapturedImage(result.assets[0].uri);
+      let loc = await Location.getCurrentPositionAsync({});
+      const userLoc = {
+            latitude: loc.coords.latitude,
+            longitude: loc.coords.longitude,
+            };
+      setLocation(userLoc);
     }
   };
 
@@ -76,30 +90,57 @@ export function Camera() {
     }
 
     // TODO: Add your database logic here
-    console.log("Submitting:", {
-      image: capturedImage,
-      title,
-      description,
-    });
+    const formData = new FormData();
+    formData.append("image", {
+      uri: capturedImage,
+      name: `sighting_${Date.now()}.jpg`,
+      type: "image/jpeg",
+    } as any);
+    
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("latitude", location?.latitude.toString() || "0");
+    formData.append("longitude", location?.longitude.toString() || "0");
 
-    // Reset form
-    setCapturedImage(null);
-    setTitle("");
-    setDescription("");
+    try {
+      const response = await fetch(
+        'http://YOUR_BACKEND_URL:8080/api/animals/upload',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        // Clear form
+        setCapturedImage(null);
+        setTitle('');
+        setDescription('');
+        setLocation(null);
 
-    // Navigate back to Map
-    navigation.navigate("Map" as never);
+        // Navigate back to Map
+        navigation.navigate("Map" as never);
 
-    // Show success message after navigation
-    setTimeout(() => {
-      Alert.alert("Success", "Your wildlife sighting has been submitted!");
-    }, 500);
+        // Show success message after navigation
+        setTimeout(() => {
+          Alert.alert("Success", "Your wildlife sighting has been submitted!");
+        }, 500);
+      } else {
+        Alert.alert('Error', data.message || 'Failed to upload data');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      Alert.alert('Error', 'Failed to upload data');
+    }
   };
 
   const retakePhoto = () => {
     setCapturedImage(null);
     setTitle("");
     setDescription("");
+    setLocation(null)
   };
 
   // If image is captured, show the form
