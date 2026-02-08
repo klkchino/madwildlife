@@ -42,3 +42,11 @@ app-example
 # generated native folders
 /ios
 /android
+
+#Spring Boot
+backend/target/
+backend/.idea/
+backend/*.log
+
+# Firebase credentials
+backend/src/main/resources/firebase-service-account.json
