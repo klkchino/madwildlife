@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -15,27 +15,25 @@ import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
+
+
 import * as Location from "expo-location";
+
+import { getAuth } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
-import { db, auth } from "../firebaseConfig";
+import { db, auth } from "../firebaseConfig"; // adjust path
+
 
 export function Camera() {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+//  const [title, setTitle] = useState("");
   const [observations, setObservations] = useState("");
   const cameraRef = useRef<CameraView>(null);
   const navigation = useNavigation();
-  const [location, setLocation] = useState<Location.LocationObject | null>(null);
-  const [locationPermission, setLocationPermission] = useState(false);
 
-  // Request location permissions on mount
-  useEffect(() => {
-    (async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      setLocationPermission(status === "granted");
-    })();
-  }, []);
+  const [location, setLocation] = useState<Location.LocationObject | null>(null);
 
   if (!permission) {
     return <View />;
@@ -56,145 +54,92 @@ export function Camera() {
 
   const takePicture = async () => {
     if (cameraRef.current) {
-      try {
-        const photo = await cameraRef.current.takePictureAsync();
-        if (photo) {
-          setCapturedImage(photo.uri);
+      const photo = await cameraRef.current.takePictureAsync();
+      if (photo) {
+        setCapturedImage(photo.uri);
 
-          if (locationPermission) {
-            const loc = await Location.getCurrentPositionAsync({});
-            setLocation(loc);
-          } else {
-            Alert.alert("Location", "Location permission not granted");
-          }
-        }
-      } catch (error) {
-        console.error("Error taking picture:", error);
-        Alert.alert("Error", "Failed to take picture");
+        const loc = await Location.getCurrentPositionAsync({});
+        setLocation(loc);
       }
     }
   };
 
   const pickImage = async () => {
-    try {
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
-      if (!result.canceled) {
-        setCapturedImage(result.assets[0].uri);
+    if (!result.canceled) {
+      setCapturedImage(result.assets[0].uri);
 
-        if (locationPermission) {
-          const loc = await Location.getCurrentPositionAsync({});
-          setLocation(loc);
-        }
-      }
-    } catch (error) {
-      console.error("Error picking image:", error);
-      Alert.alert("Error", "Failed to pick image");
+      const loc = await Location.getCurrentPositionAsync({});
+      setLocation(loc);
     }
   };
 
   const toggleCameraFacing = () => {
     setFacing((current) => (current === "back" ? "front" : "back"));
   };
+
   const handleNext = async () => {
-  if (!capturedImage) {
-    Alert.alert("Missing Information", "Please capture an image");
-    return;
-  }
+    if (!capturedImage){
+      Alert.alert("Missing Information", "Please fill in all fields");
+      return;
+    }
 
-  if (!location) {
-    Alert.alert("Missing Location", "Location data is required");
-    return;
-  }
+    const user = getAuth().currentUser;
+    if (!user) return;
 
-  const user = auth.currentUser;
-  if (!user) {
-    Alert.alert("Error", "You must be logged in");
-    return;
-  }
-
-  try {
-    // Use the username (displayName) as the document ID
-    const username = user.displayName || user.email?.split("@")[0] || user.uid;
-    
-    // Store as an object instead of array - serverTimestamp() doesn't work in arrays
     await setDoc(
-      doc(db, "userLogs", username),
+      doc(db, "userLogs", user.uid),
       {
-        tempUserLog: {
-          image: capturedImage,
-          observations: observations,
-          timestamp: serverTimestamp(),
-          location: {
+        tempUserLog: [
+          capturedImage,
+          observations,
+          serverTimestamp(),
+          {
             lat: location.coords.latitude,
             lng: location.coords.longitude,
           },
-        },
+        ],
       },
       { merge: true }
     );
 
     navigation.navigate("fieldGuide" as never);
-  } catch (error) {
-    console.error("Error saving log:", error);
-    Alert.alert("Error", "Failed to save your sighting");
-  }
-};
-/*
-  const handleNext = async () => {
-    if (!capturedImage) {
-      Alert.alert("Missing Information", "Please capture an image");
-      return;
-    }
-
-    if (!location) {
-      Alert.alert("Missing Location", "Location data is required");
-      return;
-    }
-
-    const user = auth.currentUser; // Use auth from import instead of getAuth()
-    if (!user) {
-      Alert.alert("Error", "You must be logged in");
-      return;
-    }
-
-    try {
-      const username = user.displayName || user.email?.split("@")[0] || user.uid;
-      await setDoc(
-        doc(db, "userLogs", username),
-        {
-          tempUserLog: [
-            capturedImage,
-            observations,
-            serverTimestamp(),
-            {
-              lat: location.coords.latitude,
-              lng: location.coords.longitude,
-            },
-          ],
-        },
-        { merge: true }
-      );
-
-      navigation.navigate("fieldGuide" as never);
-    } catch (error) {
-      console.error("Error saving log:", error);
-      Alert.alert("Error", "Failed to save your sighting");
-    }
   };
-*/
+
+    // TODO: Add your database logic here
+//    console.log("Submitting:", {
+ //     image: capturedImage,
+  //    title,
+   //   description,
+  //  });
+
+    // Reset form
+ //   setCapturedImage(null);
+ //   setTitle("");
+ //   setDescription("");
+
+    // Navigate back to Map
+ //   navigation.navigate("Map" as never);
+
+    // Show success message after navigation
+ //   setTimeout(() => {
+ //     Alert.alert("Success", "Your wildlife sighting has been submitted!");
+ //   }, 500);
+//  };
+
   const retakePhoto = () => {
     setCapturedImage(null);
     setObservations("");
     setLocation(null);
   };
 
-// If image is captured, show the form
+  // If image is captured, show the form
   if (capturedImage) {
     return (
       <KeyboardAvoidingView
@@ -408,4 +353,3 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-
