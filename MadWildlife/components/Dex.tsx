@@ -3,75 +3,14 @@ import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from "react
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import {defaultDexImage} from "../assets/defaultDexImage"
 import { COLORS, FONTS, SPACING, BORDER_RADIUS } from "@/assets/Theme";
+import { getFauna, getFlora, WildlifeItem } from "@/assets/markers";
 
 const Tab = createMaterialTopTabNavigator();
 
 // Default fallback image
 const DEFAULT_IMAGE = defaultDexImage;
 
-// Sample data - replace with actual data
-const faunaData = [
-  {
-    id: "1",
-    name: "Red Fox",
-    scientificName: "Vulpes vulpes",
-    imageUrl: "https://images.unsplash.com/photo-1474511320723-9a56873867b5?w=400",
-  },
-  {
-    id: "2",
-    name: "White-tailed Deer",
-    scientificName: "Odocoileus virginianus",
-    imageUrl: "https://images.unsplash.com/photo-1551797538-a19f89817e0b?w=400",
-  },
-  {
-    id: "3",
-    name: "American Robin",
-    scientificName: "Turdus migratorius",
-    imageUrl: "https://images.unsplash.com/photo-1444464666168-49d633b86797?w=400",
-  },
-  {
-    id: "4",
-    name: "Eastern Gray Squirrel",
-    scientificName: "Sciurus carolinensis",
-    imageUrl: "https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?w=400",
-  },
-];
-
-const floraData = [
-  {
-    id: "1",
-    name: "Sugar Maple",
-    scientificName: "Acer saccharum",
-    imageUrl: "https://images.unsplash.com/photo-1511497584788-876760111969?w=400",
-  },
-  {
-    id: "2",
-    name: "White Oak",
-    scientificName: "Quercus alba",
-    imageUrl: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=400",
-  },
-  {
-    id: "3",
-    name: "Wild Bergamot",
-    scientificName: "Monarda fistulosa",
-    imageUrl: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=400",
-  },
-  {
-    id: "4",
-    name: "Prairie Coneflower",
-    scientificName: "Ratibida pinnata",
-    imageUrl: "https://images.unsplash.com/photo-1463936575829-25148e1db1b8?w=400",
-  },
-];
-
-type SpeciesItem = {
-  id: string;
-  name: string;
-  scientificName: string;
-  imageUrl?: string;
-};
-
-const SpeciesCard = ({ item }: { item: SpeciesItem }) => {
+const SpeciesCard = ({ item }: { item: WildlifeItem }) => {
   const [imageError, setImageError] = useState(false);
 
   return (
@@ -90,6 +29,8 @@ const SpeciesCard = ({ item }: { item: SpeciesItem }) => {
 };
 
 function FaunaScreen() {
+  const faunaData = getFauna();
+  
   return (
     <View style={styles.tabContainer}>
       <FlatList
@@ -103,6 +44,8 @@ function FaunaScreen() {
 }
 
 function FloraScreen() {
+  const floraData = getFlora();
+  
   return (
     <View style={styles.tabContainer}>
       <FlatList
