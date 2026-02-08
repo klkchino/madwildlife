@@ -17,7 +17,7 @@ export function Navigation() {
       }}
       screenListeners={{
         tabPress: () => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
         },
       }}
     >
