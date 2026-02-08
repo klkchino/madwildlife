@@ -103,7 +103,7 @@ export function Settings() {
         headerTitleStyle: {
           fontWeight: "600",
         },
-        headerBackTitle: "", // Use this instead
+        headerBackTitle: "",
         contentStyle: {
           backgroundColor: "#F2F2F7",
         },
